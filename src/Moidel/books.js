@@ -35,4 +35,4 @@ const booksSchema = new Schema({
   }
 });
 
-module.exports = model('Libr', booksSchema);
+module.exports = model('Book', booksSchema);

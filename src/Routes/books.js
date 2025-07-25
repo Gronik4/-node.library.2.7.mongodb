@@ -1,90 +1,63 @@
 const express = require('express');
 const router = express.Router();
-const Libr = require('../Moidel/books');
-
-const stor = require('../Utils/stor');
-const Book = require('../Utils/Book');
-const {fields, names} = require('../Utils/fields');
+const Book = require('../Moidel/books');
 
 router.get('/', async(req, res)=> {
   try{
-    const books = await Libr.find().select(-__v);
-    res.render('books/index', {
-    title: 'Все книги',
-    book: books
-  })
+    const books = await Book.find().select(-__v);
+    res.json(books);
   } catch(e) {
-    res.status(500).json(e)
+    res.status(500).json(e);
   }
 });
 
-router.get('/create', (req, res)=> {
-  res.render('books/create', {
-    title: 'Добавить в библиотеку новую книгу',
-    book: {},
-    fields: fields,
-    names: names
-  })
-});
-
-router.post('/create', (req, res)=> {
+router.post('/create', async (req, res)=> {
   const {title, description, authors, favorite, fileCover, fileName, fileBook} = req.body;
   const newBook = new Book(id, title, description, authors, favorite, fileCover, fileName, fileBook);
-  stor.books.push(newBook); 
-  res.render('books/index', {
-    title: 'Все книги',
-    book: stor.books,
-  })
+  try {
+    await newBook.save();
+    res.json(newBook);
+  } catch(e) {
+    res.status(500).json(e);
+  }
 });
 
 router.get('/:id', async(req, res)=> {
   const{id} = req.params;
-  const idx = stor.books.findIndex(el=> el.id === id);
-  if(idx === -1) {
-    res.redirect('/404?flag= error without get(/:id)');
-  } else {
-    try{
-      const cnt = await client.incr(id);
-      res.render('books/view', {
-      title: 'Все про книгу',
-      book: stor.books[idx],
-      fields: fields,
-      names: names,
-      count: cnt
-      })
-    } catch(e) {
-      res.json({errcode: 500, errnsg: `redis error - ${e}!!`})
-    }
-    
+  try {
+    const book = await Book.findById(id).select('-__v');
+    res.json(book);
+  } catch(e) {
+    res.status(500).json(e);
   }
 });
 
-router.get('/update/:id', (req,res)=> {
+router.put('/:id', async(req,res)=> {
   const{id} = req.params;
-  const idx = stor.books.findIndex(el=> el.id === id);
-  if(idx === -1) {
-    res.redirect('/404?flag= Without get(update/:id)');
-  } else {
-    res.render('books/update', {
-      title: 'Изменить данные о книге',
-      book: stor.books[idx],
-      fields: fields,
-      names: names
-    })
+  const {title, description, authors, favorite, fileCover, fileName, fileBoo} = req.body;
+  try {
+    await Book.findByIdAndUpdate(id, {
+      title, 
+      description, 
+      authors, 
+      favorite, 
+      fileCover, 
+      fileName, 
+      fileBoo
+    });
+    res.redirect(`/book/${id}`);
+  } catch(e) {
+    res.status(500).json(e);
   }
 });
-router.post('/update/:id', (req,res)=> {
+
+router.delete('/:id', async(req, res)=> {
   const{id} = req.params;
-  const idx = stor.books.findIndex(el=> el.id === id);
-  const {title, description, authors, favorite, fileCover, fileName, fileBoo} = req.body;
-  if(idx === -1) {
-    res.redirect('/404?flag= Without post(update/:id)');
-  } else {
-    const {books} = stor;
-    books[idx] = {
-      ...books[idx], title, description, authors, favorite, fileCover, fileName, fileBoo
-    };
-    res.redirect(`/book/${id}`)
+  try {
+    await Book.deleteOne({_id: id});
+    res.json({message: `Book with id = ${id}  deleted successfully`});
+  } catch(e) {
+    res.status(500).json(e);
   }
 });
 

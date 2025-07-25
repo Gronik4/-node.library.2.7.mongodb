@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require("path");
+const mongoose = require('mongoose');
 
 const notPage = require('./Middleware/notPage');
 
@@ -17,11 +18,16 @@ app.use('/book', bookRouters);
 
 app.use(notPage);
 
-const PORT = process.env.PORT || 3003;
-app.listen(PORT, (err)=> {
-  if(err) {
-    return console.log(`Server not starting - err: ${err}`);
-  } else {
-    console.log(`Server starting on port: ${PORT}`);
+async function start(PORT, UrlDB) {
+  try {
+    await mongoose.connect(UrlDB);
+    app.listen(PORT, () => {
+      console.log(`Server started on port ${PORT}`);
+    });
+  } catch (e) {
+    console.error(`Error connecting to MongoDB: ${e.message}`);
   }
-})
+}
+const UrlDB = process.env.URLDB || 'mongodb://localhost:27017/library';
+const PORT = process.env.PORT || 3003;
+start(PORT, UrlDB);

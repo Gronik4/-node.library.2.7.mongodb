@@ -1,0 +1,7 @@
+"title": "Безымянный раб",
+"description": "Хорошее боевое фэнтези. На Торн не по своей воле попадают несколько землян.",
+"authors": "Виталий Зыков",
+"favorite": "10",
+"fileCover: "Твёрдый",
+"fileName": "NamelessSlave_VitaliZ",
+"fileBoo": "sZFBk8Q.txt"

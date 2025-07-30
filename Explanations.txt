@@ -2,3 +2,8 @@
 Пароль: K7e0sPMVAL0K1rP5
 Подключение: mongodb+srv://<db_username>:<db_password>@cluster0.gx0hsmi.mongodb.net/
 Подключение: mongodb+srv://golegn93:K7e0sPMVAL0K1rP5@cluster0.gx0hsmi.mongodb.net/
+
+от 28.07.2025
+Имя пользователя: Librarian
+Пароль: IzhZUM32pf9uC4oY
+Подключение: mongodb+srv://Librarian:IzhZUM32pf9uC4oY@clusterlib1.9ar29ov.mongodb.net/
